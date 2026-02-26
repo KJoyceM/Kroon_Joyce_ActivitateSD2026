@@ -146,4 +146,5 @@ int main() {
     }
     dezalocare(&laptop, &nrLaptopuri);
 	return 0;
+
 }
