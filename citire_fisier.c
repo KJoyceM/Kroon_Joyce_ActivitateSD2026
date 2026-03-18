@@ -3,7 +3,6 @@
 // #include <stdlib.h>
 // #include <string.h>
 
-// //trebuie sa folositi fisierul masini.txt
 
 // struct StructuraMasina {
 // 	int id;
