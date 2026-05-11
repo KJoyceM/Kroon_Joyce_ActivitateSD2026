@@ -63,10 +63,10 @@ void filtreazaHeap(Heap heap, int pozitieNod) {
     int pozFiuSt=2* pozitieNod+1;
     int pozFiuDr=2* pozitieNod+2;
     int pozMax=pozitieNod;
-    if(pozFiuSt<heap.nrMasini && heap.vector[pozMax].id<heap.vector[pozFiuSt].id){
+    if(pozFiuSt<heap.nrMasini && heap.vector[pozMax].pret<heap.vector[pozFiuSt].pret){
         pozMax=pozFiuSt;
     }
-    if(pozFiuDr<heap.nrMasini && heap.vector[pozMax].id<heap.vector[pozFiuDr].id){
+    if(pozFiuDr<heap.nrMasini && heap.vector[pozMax].pret<heap.vector[pozFiuDr].pret){
         pozMax=pozFiuDr;
     }
     if(pozMax!=pozitieNod){
@@ -105,23 +105,62 @@ void afisareHeap(Heap heap) {
 
 void afiseazaHeapAscuns(Heap heap) {
 	//afiseaza elementele ascunse din heap
+    //se vor afisa crescator
+    for(int i=heap.nrMasini; i<heap.lungime; i++){
+        afisareMasina(heap.vector[i]);
+    }
 }
 
-Masina extrageMasina(void* heap) {
+Masina extrageMasina(Heap* heap) {
 	//extrage si returneaza masina de pe prima pozitie
 	//elementul extras nu il stergem...doar il ascundem
+    //se ordoneaza descrescator
+    if(heap->nrMasini>0){
+        Masina aux=heap->vector[0];
+        heap->vector[0]=heap->vector[heap->nrMasini-1];
+        heap->vector[heap->nrMasini-1]=aux;
+        heap->nrMasini--;
+        for(int i=(heap->nrMasini-2)/2; i>=0; i--){
+            filtreazaHeap(*heap, i);
+        }
+        return aux; //shallow copy
+
+    }
 }
 
 
 void dezalocareHeap(Heap* heap) {
 	//sterge toate elementele din Heap
+    for(int i=0; i<heap->lungime; i++){
+        free(heap->vector[i].model);
+        free(heap->vector[i].numeSofer);
+    }
+    free(heap->vector);
+    heap->vector=NULL;
+    heap->lungime=0;
+    heap->nrMasini=0;
 }
 
 int main() {
 
     Heap heap=citireHeapDeMasiniDinFisier("masini.txt");
     afisareHeap(heap);
+    printf("Masini extrase:\n");
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
+    afisareMasina(extrageMasina(&heap));
 
+    printf("Heap-ul ascuns:\n");
+    afiseazaHeapAscuns(heap);
+
+    dezalocareHeap(&heap);
 
 	return 0;
 }
